@@ -34,4 +34,24 @@ This program will simulate those algorithms scheduling for parallel systems (ie.
 
 """
 
+class cpu: 
+    
+    #processor/core id
+    def __init__(self, id):
+        self.id = id
+    
+    def getid(self):
+        return self.id
+    
+    def setid(self, id):
+        self.id = id
+    
+    def getCurrentEndTime(self):
+        return self.curEnd #this is to denote how much bursts cpu needs to complete before its free again.
 
+    def setCurrentEndTime(self, endTime):
+        self.curEnd = endTime #this is to denote how much bursts cpu needs to complete before its free again.
+    
+    #need to implement overloading. 
+    # cpu cores need to be comparable based on their bursts required to be free again.
+        
