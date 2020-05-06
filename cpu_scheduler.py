@@ -61,48 +61,58 @@ class cpu:
     No matter the length of the job, whatever job comes first
     will be served and completed first.
 """
-def FCFS(Jobs, Jobsize):
+def FCFS(jobs, jobSize):
     totalJobLength = 0 # initialized totaljoblength as zero
     ATAT = 0
     TimeSum = 0
     JobEndTime  = []
     
-    for i in range(len(Jobs)):
-        totalJobLength = totalJobLength + Jobsize[i]
+    for i in range(len(jobs)):
+        totalJobLength = totalJobLength + jobSize[i]
         JobEndTime.insert(len(JobEndTime),totalJobLength)
         
     print("\n Job Name \t | \t Job Endtime \n")
     print("------------------------------------")
-    for j in range(len(Jobs)):
-        print(Jobs[j], "\t | \t",JobEndTime[j],"ms \n")
+    for j in range(len(jobs)):
+        print(jobs[j], "\t | \t",JobEndTime[j],"ms \n")
         TimeSum = TimeSum + JobEndTime[j]
         
-    ATAT = TimeSum / len(Jobs)
+    ATAT = TimeSum / len(jobs)
     print("\n Average Turnaround Time:",ATAT,"ms \n")
     return
 
-def RoundRobin(Jobs,Jobsize,Slice):
+def RoundRobin(jobs,jobSize,Slice):
     FinalJob = []
     tempEndTime = []
     finalJobTime = []
     totalJobLength = 0
     newSize = 0
     
-    while len(Jobsize)!=0:
-        for i in range(len(Jobsize)):
-            if Jobsize[i] <= Slice:
-                newSize = newSize + Jobsize[i]
+    while len(jobSize) > 0:
+        for i in range(len(jobSize)-1):  
+            print("i==",i)
+            if jobSize[i] <= Slice:
+                print("deleting")
+                newSize = newSize + jobSize[i]
                 tempEndTime.insert(len(tempEndTime),newSize)
                 finalJobTime.insert(len(finalJobTime),newSize)
-                FinalJob.insert(len(FinalJob),Jobs[i])
-               # Jobsize.erase(Jobsize.begin() + i)  # Since the job is completed, we can erase the current job length from circulation.
-				#Jobs.erase(Jobs.begin() + i)	# The corresponding job name is also erased from circulation.
+                FinalJob.insert(len(FinalJob),jobs[i])
+                del jobSize[i]# Since the job is completed, we can erase the current job length from circulation.
+                del jobs[i] # The corresponding job name is also erased from circulation.
                 totalJobLength = totalJobLength + newSize
+                print("newsize",newSize)
+                print("totaljoblen",totalJobLength)
+                
                 i = i - 1
+                print("i",i)
+                print("======")
             else:
                 newSize = newSize + Slice
-                Jobsize[i] = Jobsize[i] - Slice
+                jobSize[i] = jobSize[i] - Slice
                 tempEndTime.insert(len(tempEndTime),newSize)
+                print(newSize)
+                print(jobSize[i])
+                print("----")
     
     print("| \n Job Name \t | \t Job Endtime \n")
     print("------------------------------------")
@@ -113,23 +123,59 @@ def RoundRobin(Jobs,Jobsize,Slice):
     return
     
 
+def SJF(jobs,jobSize):
+    FinalJob = []
+    finalJobTime = []
+    totalJobLength = 0
+    TimeSum = 0
+    ATAT = 0
+    
+    for i in range(len(jobSize)-1):
+        for j in range(len(jobSize)-1):
+            temp1 = 0
+            temp2 = 0
+            temp3 = ""
+            temp4 = ""
+            if jobSize[j] > jobSize[j+1]:
+                temp1 = jobSize[j]
+                temp2 = jobSize[j + 1]
+                temp3 = jobs[j]
+                temp4 = jobs[j + 1]
+                jobSize[j] = temp2 
+                jobSize[j + 1] = temp1
+                jobs[j] = temp4
+                jobs[j] = temp3
+                
+    for k in range(len(jobSize)):
+        totalJobLength = totalJobLength + jobSize[k]
+        finalJobTime.insert(len(finalJobTime),totalJobLength)
+        
+    print("\n Job Name \t|\t Job Endtime \n")
+    print("------------------------------------")
+    for cur in range(len(finalJobTime)):
+        print(jobs[cur],"\t|\t", finalJobTime[cur],"ms \n")
+        TimeSum = TimeSum + finalJobTime[cur]
+    ATAT = TimeSum/ len(jobs)
+    print("\n Average Turnaround Time:", ATAT, "ms \n")
+    return
+    
+    
 def main():
     #read file maybe
     Jobs = ["Job1","Job2","Job3","Job4","Job5"]
-    Jobsize = [7,18,10,4,12]
+    jobSize = [9,14,8,43,31]
     print("---------------------------")
     print("First come, First Served")
-    FCFS(Jobs, Jobsize)
+    FCFS(Jobs, jobSize)
     
     print("---------------------------")
     print("Round Robin with time slice 2")
-    RoundRobin(Jobs, Jobsize,2)
+    #RoundRobin(Jobs, jobSize,2)
     
+    print("------------------------------")
+    print("Shortest Job First ")
+    SJF(Jobs, jobSize)
     
     return
 
-main() 
-        
-        
-        
-    
+main()
