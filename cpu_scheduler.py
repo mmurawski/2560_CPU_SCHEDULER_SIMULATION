@@ -158,7 +158,42 @@ def SJF(jobs,jobSize):
     ATAT = TimeSum/ len(jobs)
     print("\n Average Turnaround Time:", ATAT, "ms \n")
     return
+ 
+def LJF(jobs,jobSize):
+    FinalJob = []
+    finalJobTime = []
+    totalJobLength = 0
+    TimeSum = 0
+    ATAT = 0
     
+    for i in range(len(jobSize)-1):
+        for j in range(len(jobSize)-1):
+            temp1 = 0
+            temp2 = 0
+            temp3 = ""
+            temp4 = ""
+            if jobSize[j] < jobSize[j+1]:
+                temp1 = jobSize[j]
+                temp2 = jobSize[j + 1]
+                temp3 = jobs[j]
+                temp4 = jobs[j + 1]
+                jobSize[j] = temp2 
+                jobSize[j + 1] = temp1
+                jobs[j] = temp4
+                jobs[j] = temp3
+                
+    for k in range(len(jobSize)):
+        totalJobLength = totalJobLength + jobSize[k]
+        finalJobTime.insert(len(finalJobTime),totalJobLength)
+        
+    print("\n Job Name \t|\t Job Endtime \n")
+    print("------------------------------------")
+    for cur in range(len(finalJobTime)):
+        print(jobs[cur],"\t|\t", finalJobTime[cur],"ms \n")
+        TimeSum = TimeSum + finalJobTime[cur]
+    ATAT = TimeSum/ len(jobs)
+    print("\n Average Turnaround Time:", ATAT, "ms \n")
+    return 
     
 def main():
     #read file maybe
@@ -175,6 +210,10 @@ def main():
     print("------------------------------")
     print("Shortest Job First ")
     SJF(Jobs, jobSize)
+    
+    print("------------------------------")
+    print("Longest Job First ")
+    LJF(Jobs, jobSize)
     
     return
 
