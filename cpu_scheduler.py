@@ -101,6 +101,7 @@ def FCFS(jobs, jobSize):
     print("\n Average Turnaround Time:",ATAT,"ms \n")
     return
 
+#edited dante's code
 def mod_fcfs(listOfJobs, listOfCores):
     totalJobLength = 0 # initialized totaljoblength as zero
     ATAT = 0
@@ -108,16 +109,16 @@ def mod_fcfs(listOfJobs, listOfCores):
     JobEndTime  = []
     
     for i in range(len(listOfJobs)):
-        totalJobLength = totalJobLength + jobSize[i]
+        totalJobLength = totalJobLength + listOfJobs[i].getBurst()
         JobEndTime.insert(len(JobEndTime),totalJobLength)
         
     print("\n Job Name \t | \t Job Endtime \n")
     print("------------------------------------")
-    for j in range(len(jobs)):
-        print(jobs[j], "\t | \t",JobEndTime[j],"ms \n")
+    for j in range(len(listOfJobs)):
+        print(listOfJobs[j].getid(), "\t | \t" ,JobEndTime[j],"ms \n")
         TimeSum = TimeSum + JobEndTime[j]
         
-    ATAT = TimeSum / len(jobs)
+    ATAT = TimeSum / len(listOfJobs)
     print("\n Average Turnaround Time:",ATAT,"ms \n")
     return
     
@@ -268,12 +269,12 @@ def main():
     p5 = process(5,4)
     p6 = process(6,3)
     p7 = process(7,5)
-    procList = list(p1,p2,p3,p4,p5,p6,p7)
+    procList = [p1,p2,p3,p4,p5,p6,p7]
     
     core1 = cpu(1)
     core2 = cpu(2)
     
-    cpuList = list(core1, core2)    
+    cpuList = [core1, core2]    
     
     mod_fcfs(procList, cpuList)
 
