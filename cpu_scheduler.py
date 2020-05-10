@@ -37,14 +37,11 @@ This program will simulate those algorithms scheduling for parallel systems (ie.
 class cpu: 
     
     #processor/core id
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, num):
+        self.coreNum = num
     
-    def getid(self):
-        return self.id
-    
-    def setid(self, id):
-        self.id = id
+    def getCoreNum(self):
+        return self.CoreNum
     
     def getCurrentEndTime(self):
         return self.curEnd #this is to denote how much bursts cpu needs to complete before its free again.
@@ -54,13 +51,36 @@ class cpu:
     
     #need to implement overloading. 
     # cpu cores need to be comparable based on their bursts required to be free again.
-        
-        
+            
+class process:
+    #processor/core id
+    def __init__(self, id, burst):
+        self.id = id
+        self.burst = burst
+    
+    def getid(self):
+        return self.id
+    
+    def setid(self, id):
+        self.id = id
+    
+    def getBurst(self):
+        return self.burst #this is to denote how much bursts cpu needs to complete before its free again.
+
+    def setBurst(self, updatedBurst):
+        self.burst = updatedBurst #this is to denote how much bursts cpu needs to complete before its free again.
+    
+    
 """
     Order that job arrives indicates its importance level.
     No matter the length of the job, whatever job comes first
     will be served and completed first.
 """
+
+
+        
+#edit so it takes the list of processes objects
+#edit so that it takes an information about current amount of cores
 def FCFS(jobs, jobSize):
     totalJobLength = 0 # initialized totaljoblength as zero
     ATAT = 0
@@ -80,6 +100,28 @@ def FCFS(jobs, jobSize):
     ATAT = TimeSum / len(jobs)
     print("\n Average Turnaround Time:",ATAT,"ms \n")
     return
+
+def mod_fcfs(listOfJobs, listOfCores):
+    totalJobLength = 0 # initialized totaljoblength as zero
+    ATAT = 0
+    TimeSum = 0
+    JobEndTime  = []
+    
+    for i in range(len(listOfJobs)):
+        totalJobLength = totalJobLength + jobSize[i]
+        JobEndTime.insert(len(JobEndTime),totalJobLength)
+        
+    print("\n Job Name \t | \t Job Endtime \n")
+    print("------------------------------------")
+    for j in range(len(jobs)):
+        print(jobs[j], "\t | \t",JobEndTime[j],"ms \n")
+        TimeSum = TimeSum + JobEndTime[j]
+        
+    ATAT = TimeSum / len(jobs)
+    print("\n Average Turnaround Time:",ATAT,"ms \n")
+    return
+    
+
 
 def RoundRobin(jobs,jobSize,Slice):
     FinalJob = []
@@ -195,7 +237,7 @@ def LJF(jobs,jobSize):
     print("\n Average Turnaround Time:", ATAT, "ms \n")
     return 
     
-def main():
+def main_test():
     #read file maybe
     Jobs = ["Job1","Job2","Job3","Job4","Job5"]
     jobSize = [9,14,8,43,31]
@@ -204,8 +246,8 @@ def main():
     FCFS(Jobs, jobSize)
     
     print("---------------------------")
-    print("Round Robin with time slice 2")
     #RoundRobin(Jobs, jobSize,2)
+    print("Round Robin with time slice 2")
     
     print("------------------------------")
     print("Shortest Job First ")
@@ -216,5 +258,23 @@ def main():
     LJF(Jobs, jobSize)
     
     return
+
+def main():
+    
+    p1 = process(1,5)
+    p2 = process(2,10)
+    p3 = process(3,7)
+    p4 = process(4,3)
+    p5 = process(5,4)
+    p6 = process(6,3)
+    p7 = process(7,5)
+    procList = list(p1,p2,p3,p4,p5,p6,p7)
+    
+    core1 = cpu(1)
+    core2 = cpu(2)
+    
+    cpuList = list(core1, core2)    
+    
+    mod_fcfs(procList, cpuList)
 
 main()
