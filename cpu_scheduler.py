@@ -113,7 +113,8 @@ def mod_fcfs(listOfJobs, listOfCores):
             currBurst = listOfCores[i].getEndTime()
             print("Processor ",i," is executing ",currBurst) #if it sais '...executing 0' it means its currently free
             if currBurst == 0: #if the process finished execution
-                try: # this a hacky way of checking if the queue is empty. I am basically catching exception but not doing anything with it. will fix later.
+                
+                try: # this a hacky way of checking if the queue is empty. I am basically catching exception but not doing anything with it. will make it less janky tomorrow.
                     proc = procqueue.pop(0) #get a new process from a queue
                     print("Process with id:",proc.getid(),"and cpu time requirement of",proc.getBurst()," has started execution on processor",i)
                 except:
