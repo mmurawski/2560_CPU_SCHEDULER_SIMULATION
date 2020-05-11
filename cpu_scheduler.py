@@ -131,10 +131,11 @@ def multicore_fcfs(listOfJobs, listOfCores):
                    pass #this processor finished execution
                else:
                    print("Processor:",i,"is executing its last",currBurst,"bursts of operation")
-                   cyclesDone += currBurst
-                   '''
-                   don't bother with bursts, just add whatever is remaining to the cores total time
-                   '''
+                   cyclesDone += currBurst #This is very wrong
+                 '''
+                 TO DO: Simulate how bursts get done so that the cyclesDone is accurate. 
+                 While loop it till a core is empty while adding 1 to cycles done each time at least one of the cores has a process 
+                 '''
     
     apt = execTime/len(listOfJobs)
     statIncrease = (cyclesDone - execTime)/execTime
@@ -148,7 +149,7 @@ def multicore_fcfs(listOfJobs, listOfCores):
     print(" percents compared to the single core run of those jobs")
     
     for i in range(noCores):           
-        currBurst = listOfCores[i].setEndTime(0)
+        currBurst = listOfCores[i].setEndTime(0) #reset the processors
 
     return
     
@@ -192,10 +193,11 @@ def multicore_sjf(listOfJobs, listOfCores):
                    pass #this processor finished execution
                else:
                    print("Processor:",i,"is executing its last",currBurst,"bursts of operation")
-                   cyclesDone += currBurst
-                   '''
-                   don't bother with bursts, just add whatever is remaining to the cores total time
-                   '''
+                   cyclesDone += currBurst-1#This is very wrong
+                 '''
+                 TO DO: Simulate how bursts get done so that the cyclesDone is accurate. 
+                 While loop it till a core is empty while adding 1 to cycles done each time at least one of the cores has a process 
+                 '''
     
     apt = execTime/len(listOfJobs)
     statIncrease = (cyclesDone - execTime)/execTime
@@ -209,7 +211,7 @@ def multicore_sjf(listOfJobs, listOfCores):
     print("percents compared to the single core run of those jobs")
     
     for i in range(noCores):           
-        currBurst = listOfCores[i].setEndTime(0)
+        currBurst = listOfCores[i].setEndTime(0) #reset the processor
     
     return
 
@@ -255,11 +257,14 @@ def multicore_ljf(listOfJobs, listOfCores):
                    pass #this processor finished execution
                else:
                    print("Processor:",i,"is executing its last",currBurst*-1,"bursts of operation")
-                   cyclesDone += currBurst
-                   '''
-                   don't bother with bursts, just add whatever is remaining to the cores total time
-                   '''
-    
+               cyclesDone += 1#This is very wrong
+                 '''
+                 TO DO: Simulate how bursts get done so that the cyclesDone is accurate. 
+                 While loop it till a core is empty while adding 1 to cycles done each time at least one of the cores has a process 
+                 '''    
+            
+                   
+                   
     apt = execTime/len(listOfJobs)
     statIncrease = (cyclesDone - execTime)/execTime
     statIncrease = statIncrease * 100
@@ -277,7 +282,7 @@ def multicore_ljf(listOfJobs, listOfCores):
         listOfJobs[i].setBurst(newValue*-1) #this is to fix the list back to normal 
         #print(listOfJobs[i])
     for i in range(noCores):           
-        currBurst = listOfCores[i].setEndTime(0)
+        currBurst = listOfCores[i].setEndTime(0) #reset the processor
     
     return
 
