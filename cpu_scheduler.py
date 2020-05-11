@@ -148,8 +148,6 @@ def mod_fcfs(listOfJobs, listOfCores):
                    '''
                    don't bother with bursts, just add whatever is remaining to the cores total time
                    '''
-                   
-
     
     '''
     print("\n Job Name \t | \t Job Endtime \n")
