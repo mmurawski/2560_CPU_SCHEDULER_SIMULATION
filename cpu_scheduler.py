@@ -150,7 +150,7 @@ def mod_fcfs(listOfJobs, listOfCores):
     print("Average process time:",apt," cpu cycles")
     print("thanks to parallelism of this machine with",noCores,"cores")
     print("we increased proficiency of this system by:",statIncrease.__abs__())
-    print("compared to the single core run of those jobs")
+    print(" percents compared to the single core run of those jobs")
     
     
     return
