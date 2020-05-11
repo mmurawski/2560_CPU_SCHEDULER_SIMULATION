@@ -1,21 +1,5 @@
 """
-Basic CPU scheduler simulator
-It takes jobs in form:
-'p' 'pid' 'burst' 'priority' 
-separated by the \t 
-pid is the process id, burst is how much cpu bursts are required to finish the process.
-priority is the number stating the importance of the process. (lower number means higher priority)
-
-CPU can read one line at a time (to simulate one burst)
-if at specific burst no process arrives it will be denoted as 0 in the file
-
-This is example of a simple usage where 3 processes arrive at the beginning 
-and then a 4th process arrives after two bursts
-p 1 10 1 p 2 10 1 p 3 13 3
-0
-0
-p 4 10 4.
-end of file.
+Basic parallel CPU scheduler simulator 
 
 four algorithms will be simulated
 First Come First Serve
@@ -33,22 +17,30 @@ Round Robin
 This program will simulate those algorithms scheduling for parallel systems (ie. with multiple cores or processors)
 
 """
+import queue
 
 class cpu: 
     
     #processor/core id
     def __init__(self, num):
         self.coreNum = num
+        self.curEnd = 0
+        self.idle = True
     
     def getCoreNum(self):
         return self.CoreNum
     
-    def getCurrentEndTime(self):
+    def getEndTime(self):
         return self.curEnd #this is to denote how much bursts cpu needs to complete before its free again.
 
-    def setCurrentEndTime(self, endTime):
+    def setEndTime(self, endTime):
         self.curEnd = endTime #this is to denote how much bursts cpu needs to complete before its free again.
-    
+  
+    def setIdle(self, idleStatus):
+        self.idle = idle
+        
+    def getIdle(self):
+        return self.idle
     #need to implement overloading. 
     # cpu cores need to be comparable based on their bursts required to be free again.
             
@@ -101,25 +93,78 @@ def FCFS(jobs, jobSize):
     print("\n Average Turnaround Time:",ATAT,"ms \n")
     return
 
-#edited dante's code
+#edited dante's code to work with my class representation
+    '''
+    todo: multicore
+    '''
 def mod_fcfs(listOfJobs, listOfCores):
-    totalJobLength = 0 # initialized totaljoblength as zero
-    ATAT = 0
-    TimeSum = 0
-    JobEndTime  = []
+    #ATAT = 0
+    noCores = len(listOfCores) #number of cores
     
+    
+    atat = [0]*noCores
+    apt = [0]*noCores
+    awt = [0]*noCores
+    
+    JobEndTime  = [0]*noCores
+    totalJobLength = [0]*noCores 
+    TimeSum = [0]*noCores
+    
+    
+    '''
     for i in range(len(listOfJobs)):
         totalJobLength = totalJobLength + listOfJobs[i].getBurst()
         JobEndTime.insert(len(JobEndTime),totalJobLength)
+       
+    '''
+    
+    procqueue = []
+    for i in range(len(listOfJobs)):
+        procqueue.append(listOfJobs[i])
         
+    jobsFinished = False #<- this has to be made true if the queue of processes is empty and every cpu is done executing.
+    noCoresFinished = 0 #<- number of cores that are done executing
+    
+    while not jobsFinished: #<- this skips the execution of the last process
+        print("procQueue loops")
+        #executing bursts
+        for i in range(noCores):
+            currBurst = listOfCores[i].getEndTime() #remaining cpu bursts of a processor i to finish a process
+            print("Processor ",i," is executing ",currBurst)
+            if currBurst == 0: #if the process finished execution
+                try:
+                    proc = procqueue.pop(0) #get a new process
+                    print("Process with id:",proc.getid(),"and cpu time requirement of",proc.getBurst()," started execution")
+                except:
+                    listOfCores[i].setEndTime(0)
+                    pass
+                else:
+                    listOfCores[i].setEndTime(proc.getBurst()-1)
+                    
+                #^assigns a process to a currently empty core
+            else:
+                listOfCores[i].setEndTime(currBurst - 1) #continue
+        
+        if not procqueue: #if the queue of processes is empty
+            for i in range(noCores):
+                if listOfCores[i].getEndTime() == 0:
+                    noCoresFinished += 1
+            
+            if noCoresFinished == noCores:
+                jobsFinished == True
+        
+    
+    
+    '''
     print("\n Job Name \t | \t Job Endtime \n")
     print("------------------------------------")
     for j in range(len(listOfJobs)):
-        print(listOfJobs[j].getid(), "\t | \t" ,JobEndTime[j],"ms \n")
+        print(listOfJobs[j].getid(), "\t | \t" ,JobEndTime[j],"cpu bursts \n")
         TimeSum = TimeSum + JobEndTime[j]
         
-    ATAT = TimeSum / len(listOfJobs)
-    print("\n Average Turnaround Time:",ATAT,"ms \n")
+    #ATAT = TimeSum / len(listOfJobs)
+    print("\n Average Turnaround Time:",ATAT,"cpu bursts \n")
+    '''
     return
     
 
