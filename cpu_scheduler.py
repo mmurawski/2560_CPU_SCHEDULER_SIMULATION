@@ -66,7 +66,7 @@ class process:
         return self.burst < proc2.burst
 
     def __str__(self):
-        string1 = "Process: "+str(self.pid)+" with burst requirements:"+str(self.burst)
+        string1 = "Process: "+str(self.id)+" with burst requirements:"+str(self.burst)
         return string1
         
 #edit so it takes the list of processes objects
@@ -147,6 +147,9 @@ def multicore_fcfs(listOfJobs, listOfCores):
     print("we increased proficiency of this system by:",statIncrease.__abs__())
     print(" percents compared to the single core run of those jobs")
     
+    for i in range(noCores):           
+        currBurst = listOfCores[i].setEndTime(0)
+
     return
     
 def multicore_sjf(listOfJobs, listOfCores):
@@ -205,6 +208,9 @@ def multicore_sjf(listOfJobs, listOfCores):
     print("we increased proficiency of this system by:",statIncrease.__abs__())
     print("percents compared to the single core run of those jobs")
     
+    for i in range(noCores):           
+        currBurst = listOfCores[i].setEndTime(0)
+    
     return
 
 def multicore_ljf(listOfJobs, listOfCores):
@@ -225,7 +231,7 @@ def multicore_ljf(listOfJobs, listOfCores):
         #executing bursts
         for i in range(noCores):
             currBurst = listOfCores[i].getEndTime()
-            print("Processor ",i," is executing ",currBurst) #if it sais '...executing 0' it means its currently free
+            print("Processor ",i," is executing ",currBurst*-1) #if it sais '...executing 0' it means its currently free
             if currBurst == 0: #if the process finished execution
                 
             
@@ -248,7 +254,7 @@ def multicore_ljf(listOfJobs, listOfCores):
                if currBurst == 0:
                    pass #this processor finished execution
                else:
-                   print("Processor:",i,"is executing its last",currBurst,"bursts of operation")
+                   print("Processor:",i,"is executing its last",currBurst*-1,"bursts of operation")
                    cyclesDone += currBurst
                    '''
                    don't bother with bursts, just add whatever is remaining to the cores total time
@@ -259,11 +265,19 @@ def multicore_ljf(listOfJobs, listOfCores):
     statIncrease = statIncrease * 100
     
     print("\nCycles of CPU operations done:",cyclesDone)
-    print("During this time, this many instructions were completed:",execTime)
+    print("During this time, this many instructions were completed:",execTime*-1)
     print("Average process time:",apt," cpu cycles")
     print("thanks to parallelism of this machine with",noCores,"cores")
     print("we increased proficiency of this system by:",statIncrease.__abs__())
     print("percents compared to the single core run of those jobs")
+    
+    
+    for i in range(len(listOfJobs)):
+        newValue = listOfJobs[i].getBurst()
+        listOfJobs[i].setBurst(newValue*-1) #this is to fix the list back to normal 
+        #print(listOfJobs[i])
+    for i in range(noCores):           
+        currBurst = listOfCores[i].setEndTime(0)
     
     return
 
@@ -419,6 +433,11 @@ def main():
     
     cpuList = [core1, core2]    
     
+    print("\nMulticore LJF\n*******************************")
     multicore_ljf(procList, cpuList)
+    print("\nMulticore SJF\n*******************************")
+    multicore_sjf(procList, cpuList)
+
+    
 
 main()
