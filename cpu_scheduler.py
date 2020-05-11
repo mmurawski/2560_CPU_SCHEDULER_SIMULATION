@@ -94,11 +94,7 @@ def FCFS(jobs, jobSize):
     return
 
 #edited dante's code to work with my class representation
-    '''
-    todo: multicore
-    '''
 def mod_fcfs(listOfJobs, listOfCores):
-    #ATAT = 0
     noCores = len(listOfCores) #number of cores
     
     
@@ -122,21 +118,18 @@ def mod_fcfs(listOfJobs, listOfCores):
     for i in range(len(listOfJobs)):
         procqueue.append(listOfJobs[i])
         
-    jobsFinished = False #<- this has to be made true if the queue of processes is empty and every cpu is done executing.
-    noCoresFinished = 0 #<- number of cores that are done executing
     
-    while not jobsFinished: #<- this skips the execution of the last process
-        print("procQueue loops")
+    
+    while procqueue: 
         #executing bursts
         for i in range(noCores):
-            currBurst = listOfCores[i].getEndTime() #remaining cpu bursts of a processor i to finish a process
-            print("Processor ",i," is executing ",currBurst)
+            currBurst = listOfCores[i].getEndTime()
+            print("Processor ",i," is executing ",currBurst) #if it sais '...executing 0' it means its currently free
             if currBurst == 0: #if the process finished execution
-                try:
-                    proc = procqueue.pop(0) #get a new process
-                    print("Process with id:",proc.getid(),"and cpu time requirement of",proc.getBurst()," started execution")
+                try: # this a hacky way of checking if the queue is empty. I am basically catching exception but not doing anything with it. will fix later.
+                    proc = procqueue.pop(0) #get a new process from a queue
+                    print("Process with id:",proc.getid(),"and cpu time requirement of",proc.getBurst()," has started execution on processor",i)
                 except:
-                    listOfCores[i].setEndTime(0)
                     pass
                 else:
                     listOfCores[i].setEndTime(proc.getBurst()-1)
@@ -145,15 +138,18 @@ def mod_fcfs(listOfJobs, listOfCores):
             else:
                 listOfCores[i].setEndTime(currBurst - 1) #continue
         
-        if not procqueue: #if the queue of processes is empty
-            for i in range(noCores):
-                if listOfCores[i].getEndTime() == 0:
-                    noCoresFinished += 1
-            
-            if noCoresFinished == noCores:
-                jobsFinished == True
-        
-    
+        if not procqueue: #<- if the process queue is empty, check if some processor still needs to finish executing
+            for i in range(noCores):           
+               currBurst = listOfCores[i].getEndTime()
+               if currBurst == 0:
+                   pass #this processor finished execution
+               else:
+                   print("Processor:",i,"is executing its last",currBurst,"bursts of operation")
+                   '''
+                   don't bother with bursts, just add whatever is remaining to the cores total time
+                   '''
+                   
+
     
     '''
     print("\n Job Name \t | \t Job Endtime \n")
