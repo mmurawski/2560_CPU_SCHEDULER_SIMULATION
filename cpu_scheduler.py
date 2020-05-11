@@ -98,28 +98,15 @@ def mod_fcfs(listOfJobs, listOfCores):
     noCores = len(listOfCores) #number of cores
     
     
-    atat = [0]*noCores
-    apt = [0]*noCores
-    awt = [0]*noCores
-    
-    JobEndTime  = [0]*noCores
-    totalJobLength = [0]*noCores 
-    TimeSum = [0]*noCores
-    
-    
-    '''
-    for i in range(len(listOfJobs)):
-        totalJobLength = totalJobLength + listOfJobs[i].getBurst()
-        JobEndTime.insert(len(JobEndTime),totalJobLength)
-       
-    '''
+    execTime = 0 #used to calculate average execution time
+    cyclesDone = 0; #multicore processors do their own bursts in parallel. This counter counts how many simultaneous bursts were completed
     
     procqueue = []
     for i in range(len(listOfJobs)):
         procqueue.append(listOfJobs[i])
+        execTime = execTime + listOfJobs[i].getBurst() #get the burst requirements of all the processes.
         
-    
-    
+        
     while procqueue: 
         #executing bursts
         for i in range(noCores):
@@ -137,6 +124,8 @@ def mod_fcfs(listOfJobs, listOfCores):
                 #^assigns a process to a currently empty core
             else:
                 listOfCores[i].setEndTime(currBurst - 1) #continue
+                
+        cyclesDone += 1
         
         if not procqueue: #<- if the process queue is empty, check if some processor still needs to finish executing
             for i in range(noCores):           
@@ -145,20 +134,24 @@ def mod_fcfs(listOfJobs, listOfCores):
                    pass #this processor finished execution
                else:
                    print("Processor:",i,"is executing its last",currBurst,"bursts of operation")
+                   cyclesDone += currBurst
                    '''
                    don't bother with bursts, just add whatever is remaining to the cores total time
                    '''
     
-    '''
-    print("\n Job Name \t | \t Job Endtime \n")
-    print("------------------------------------")
-    for j in range(len(listOfJobs)):
-        print(listOfJobs[j].getid(), "\t | \t" ,JobEndTime[j],"cpu bursts \n")
-        TimeSum = TimeSum + JobEndTime[j]
-        
-    #ATAT = TimeSum / len(listOfJobs)
-    print("\n Average Turnaround Time:",ATAT,"cpu bursts \n")
-    '''
+    
+    apt = execTime/len(listOfJobs)
+    statIncrease = (cyclesDone - execTime)/execTime
+    statIncrease = statIncrease * 100
+    
+    print("\nCycles of CPU operations done:",cyclesDone)
+    print("During this time, this many instructions were completed:",execTime)
+    print("Average process time:",apt," cpu cycles")
+    print("thanks to parallelism of this machine with",noCores,"cores")
+    print("we increased proficiency of this system by:",statIncrease.__abs__())
+    print("compared to the single core run of those jobs")
+    
+    
     return
     
 
