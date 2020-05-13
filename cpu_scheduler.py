@@ -399,7 +399,9 @@ def decoupleJobs(jobs):
     jobsize = []
     
     for i in range(len(jobs)):
-        print(jobs[i].getid()," and their requirement:",jobs[i].getBurst())
+        #print(jobs[i].getid()," and their requirement:",jobs[i].getBurst())
+        jobid[i] = jobs[i].getid()
+        jobsize[i] = jobs[i].getBurst()
         
     return
 
