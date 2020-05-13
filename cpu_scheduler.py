@@ -390,6 +390,19 @@ def generateRandomJobs(noJobs):
         
     return jobs
 
+def printJobs(jobs):
+    for i in range(len(jobs)):
+        print(jobs[i])
+
+def decoupleJobs(jobs):
+    jobid = []
+    jobsize = []
+    
+    for i in range(len(jobs)):
+        print(jobs[i].getid()," and their requirement:",jobs[i].getBurst())
+        
+    return
+
 def main_test():
     #read file maybe
     Jobs = ["Job1","Job2","Job3","Job4","Job5"]
@@ -438,11 +451,8 @@ def main():
     
 def realmain():
     procList = []
-    procList = generateRandomJobs(1)
+    procList = generateRandomJobs(20)
     
-    print(procList)
-    
-    for i in range(len(procList)):
-        print(procList[i])
+    decoupleJobs(procList)
 
 realmain()
