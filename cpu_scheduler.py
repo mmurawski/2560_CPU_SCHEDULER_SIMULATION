@@ -245,7 +245,7 @@ def multicore_ljf(listOfJobs, listOfCores):
                    print("Processor:",i,"is executing its last",currBurst*-1,"bursts of operation")
                    listOfBursts.append(currBurst*-1)               
             listOfBursts.sort()
-            cyclesDone += listOfBursts[0] #adding the work of a last cpu to finish to our cycles count    
+            cyclesDone += listOfBursts[-1] #adding the work of a last cpu to finish to our cycles count    
 
     execTime = execTime*-1
     apt = (execTime/len(listOfJobs))
@@ -390,6 +390,14 @@ def generateRandomJobs(noJobs):
         
     return jobs
 
+def prepareCores(noCores):
+    numCores = int(noCores)
+    cpuList = []
+    for i in range(1, numCores+1):
+        cpuList.append(cpu(i))
+    
+    return cpuList
+
 def printJobs(jobs):
     for i in range(len(jobs)):
         print(jobs[i])
@@ -403,7 +411,7 @@ def decoupleJobs(jobs):
         jobid[i] = jobs[i].getid()
         jobsize[i] = jobs[i].getBurst()
         
-    return
+    return jobid, jobsize
 
 def openFile():
     try:
@@ -424,42 +432,16 @@ def readFileIntoProcesse(file1):
             lineList = line.split() 
             
             try:
-                procList.append(process(lineList[0], lineList[1])) 
+                pid = int(lineList[0])
+                burst = int(lineList[1])
+                procList.append(process(pid, burst))
             except IndexError:
                 print("Wrong format of the file")
             except:
                 print("Something went wrong")
                 
-                
-                
-                '''
-                try:
-                    item = int(item) 
-                    if int(item) > 100:
-                        raise ValueTooBigError
-                    elif int(item) < 0:
-                        raise ValueTooSmallError       
-                except ValueError: #value not a number
-                    numInvalid += 1
-                    item = 0
-                except ValueTooBigError:
-                    item = 100
-                    numAdjusted += 1
-                except ValueTooSmallError:
-                    item = 0
-                    numAdjusted += 1
-                else:
-                    numValid += 1
-                finally:
-                    sumOfScores += item
-        
-        print("Congrats")
-        name = file1.name
-        return name, sumOfScores, numValid, numAdjusted, numInvalid
-    else: 
-        print("No file present, exiting")
-        return 0
-    '''
+    return procList    
+    
     
 def main_test():
     #read file maybe
@@ -497,7 +479,7 @@ def main():
     core1 = cpu(1)
     core2 = cpu(2)
     
-    cpuList = [core1] #[core1, core2]    
+    cpuList = [core1, core2]    
     
     print("\nMulticore FCFS\n*******************************")
     multicore_fcfs(procList, cpuList)
@@ -509,8 +491,18 @@ def main():
     
 def realmain():
     procList = []
-    procList = generateRandomJobs(20)
     
-    decoupleJobs(procList)
+    procList = readFileIntoProcesse(openFile())
+    printJobs(procList)
+    
+    noCpu = input("how many cpus")
+    cpuList = prepareCores(noCpu)
+    
+    print("\nMulticore FCFS\n*******************************")
+    multicore_fcfs(procList, cpuList)
+    print("\nMulticore LJF\n*******************************")
+    multicore_ljf(procList, cpuList)
+    print("\nMulticore SJF\n*******************************")
+    multicore_sjf(procList, cpuList)
 
-realmain()
+main()
