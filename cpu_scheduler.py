@@ -416,8 +416,50 @@ def openFile():
         file1.close
         return file1
     
+def readFileIntoProcesse(file1):
+    procList = []
     
-
+    if file1 != 0:
+        for line in file1:
+            lineList = line.split() 
+            
+            try:
+                procList.append(process(lineList[0], lineList[1])) 
+            except IndexError:
+                print("Wrong format of the file")
+            except:
+                print("Something went wrong")
+                
+                
+                
+                '''
+                try:
+                    item = int(item) 
+                    if int(item) > 100:
+                        raise ValueTooBigError
+                    elif int(item) < 0:
+                        raise ValueTooSmallError       
+                except ValueError: #value not a number
+                    numInvalid += 1
+                    item = 0
+                except ValueTooBigError:
+                    item = 100
+                    numAdjusted += 1
+                except ValueTooSmallError:
+                    item = 0
+                    numAdjusted += 1
+                else:
+                    numValid += 1
+                finally:
+                    sumOfScores += item
+        
+        print("Congrats")
+        name = file1.name
+        return name, sumOfScores, numValid, numAdjusted, numInvalid
+    else: 
+        print("No file present, exiting")
+        return 0
+    '''
     
 def main_test():
     #read file maybe
