@@ -18,9 +18,9 @@ This program will simulate those algorithms scheduling for parallel systems (ie.
 
 """
 from queue import PriorityQueue
+import random
 
 class cpu: 
-    
     #processor/core id
     def __init__(self, num):
         self.coreNum = num
@@ -91,25 +91,22 @@ def FCFS(jobs, jobSize):
     print("\n Average Turnaround Time:",ATAT,"ms \n")
     return
 
-#edited dante's code to work with my class representation
-def multicore_fcfs(listOfJobs, listOfCores):
+
+def multicore_fcfs(listOfJobs, listOfCores): #works single core
     noCores = len(listOfCores) #number of cores
-    
     execTime = 0 #used to calculate average execution time
     cyclesDone = 0; #multicore processors do their own bursts in parallel. This counter counts how many simultaneous bursts were completed
-    
     procqueue = []
+    
     for i in range(len(listOfJobs)):
         procqueue.append(listOfJobs[i])
         execTime = execTime + listOfJobs[i].getBurst() #get the burst requirements of all the processes.
         
-    while procqueue: 
-        #executing bursts
+    while procqueue: #executing bursts
         for i in range(noCores):
             currBurst = listOfCores[i].getEndTime()
-            print("Processor ",i," is executing ",currBurst) #if it sais '...executing 0' it means its currently free
+            #print("Processor ",i," is executing ",currBurst) #if it sais '...executing 0' it means its currently free
             if currBurst == 0: #if the process finished execution
-                
                 try:
                     proc = procqueue.pop(0) #get a new process from a queue
                     print("Process with id:",proc.getid(),"and cpu time requirement of",proc.getBurst()," has started execution on processor",i)
@@ -124,6 +121,7 @@ def multicore_fcfs(listOfJobs, listOfCores):
                 
         cyclesDone += 1
         
+        listOfBursts = [] #used to find the remining time cpu has to be operational when queue is empty
         if not procqueue: #<- if the process queue is empty, check if some processor still needs to finish executing
             for i in range(noCores):           
                currBurst = listOfCores[i].getEndTime()
@@ -131,12 +129,11 @@ def multicore_fcfs(listOfJobs, listOfCores):
                    pass #this processor finished execution
                else:
                    print("Processor:",i,"is executing its last",currBurst,"bursts of operation")
-                   cyclesDone += currBurst #This is very wrong
-                 '''
-                 TO DO: Simulate how bursts get done so that the cyclesDone is accurate. 
-                 While loop it till a core is empty while adding 1 to cycles done each time at least one of the cores has a process 
-                 '''
-    
+                   listOfBursts.append(currBurst)
+               
+            listOfBursts.sort()
+            cyclesDone += listOfBursts[-1] #adding the work of a last cpu to finish to our cycles count 
+
     apt = execTime/len(listOfJobs)
     statIncrease = (cyclesDone - execTime)/execTime
     statIncrease = statIncrease * 100
@@ -154,25 +151,20 @@ def multicore_fcfs(listOfJobs, listOfCores):
     return
     
 def multicore_sjf(listOfJobs, listOfCores):
-    noCores = len(listOfCores) #number of cores
-    
+    noCores = len(listOfCores) #number of cores 
     execTime = 0 #used to calculate average execution time
-    cyclesDone = 0; #multicore processors do their own bursts in parallel. This counter counts how many simultaneous bursts were completed
-    
+    cyclesDone = 0; #multicore processors do their own bursts in parallel. This counter counts how many simultaneous bursts were completed 
     procqueue = PriorityQueue()
 
     for i in range(len(listOfJobs)):
         procqueue.put(listOfJobs[i])
         execTime = execTime + listOfJobs[i].getBurst() #get the burst requirements of all the processes.
         
-    while not procqueue.empty(): 
-        #executing bursts
+    while not procqueue.empty():     #executing bursts
         for i in range(noCores):
             currBurst = listOfCores[i].getEndTime()
-            print("Processor ",i," is executing ",currBurst) #if it sais '...executing 0' it means its currently free
+            #print("Processor ",i," is executing ",currBurst) #if it sais '...executing 0' it means its currently free
             if currBurst == 0: #if the process finished execution
-                
-            
                     proc = procqueue.get() #get a new process from a queue
                     if proc:
                         print("Process with id:",proc.getid(),"and cpu time requirement of",proc.getBurst()," has started execution on core",i)
@@ -185,7 +177,7 @@ def multicore_sjf(listOfJobs, listOfCores):
                 listOfCores[i].setEndTime(currBurst - 1) #continue
                 
         cyclesDone += 1
-        
+        listOfBursts = [] #used to find the remining time cpu has to be operational when queue is empty
         if procqueue.empty(): #<- if the process queue is empty, check if some processor still needs to finish executing
             for i in range(noCores):           
                currBurst = listOfCores[i].getEndTime()
@@ -193,12 +185,11 @@ def multicore_sjf(listOfJobs, listOfCores):
                    pass #this processor finished execution
                else:
                    print("Processor:",i,"is executing its last",currBurst,"bursts of operation")
-                   cyclesDone += currBurst-1#This is very wrong
-                 '''
-                 TO DO: Simulate how bursts get done so that the cyclesDone is accurate. 
-                 While loop it till a core is empty while adding 1 to cycles done each time at least one of the cores has a process 
-                 '''
-    
+                   listOfBursts.append(currBurst)
+                   
+            listOfBursts.sort()
+            cyclesDone += listOfBursts[-1] #adding the work of a last cpu to finish to our cycles count 
+     
     apt = execTime/len(listOfJobs)
     statIncrease = (cyclesDone - execTime)/execTime
     statIncrease = statIncrease * 100
@@ -217,26 +208,20 @@ def multicore_sjf(listOfJobs, listOfCores):
 
 def multicore_ljf(listOfJobs, listOfCores):
     noCores = len(listOfCores) #number of cores
-    
     execTime = 0 #used to calculate average execution time
-    cyclesDone = 0; #multicore processors do their own bursts in parallel. This counter counts how many simultaneous bursts were completed
-    
+    cyclesDone = 0; #multicore processors do their own bursts in parallel. This counter counts how many simultaneous bursts were completed    
     procqueue = PriorityQueue()
 
     for i in range(len(listOfJobs)):
         newValue = listOfJobs[i].getBurst()
-        listOfJobs[i].setBurst(newValue*-1)
+        listOfJobs[i].setBurst(newValue*-1) #done so the priorityQueue works in reverse and longests jobs are first
         procqueue.put(listOfJobs[i])
         execTime = execTime + listOfJobs[i].getBurst() #get the burst requirements of all the processes.
         
-    while not procqueue.empty(): 
-        #executing bursts
+    while not procqueue.empty():         #executing bursts
         for i in range(noCores):
             currBurst = listOfCores[i].getEndTime()
-            print("Processor ",i," is executing ",currBurst*-1) #if it sais '...executing 0' it means its currently free
             if currBurst == 0: #if the process finished execution
-                
-            
                     proc = procqueue.get() #get a new process from a queue
                     if proc:
                         print("Process with id:",proc.getid(),"and cpu time requirement of",proc.getBurst()*-1," has started execution on core",i)
@@ -248,8 +233,9 @@ def multicore_ljf(listOfJobs, listOfCores):
             else:
                 listOfCores[i].setEndTime(currBurst +1) #continue
                 
-        cyclesDone += 1
+        cyclesDone += 1        
         
+        listOfBursts = [] #used to find the remining time cpu has to be operational when queue is empty
         if procqueue.empty(): #<- if the process queue is empty, check if some processor still needs to finish executing
             for i in range(noCores):           
                currBurst = listOfCores[i].getEndTime()
@@ -257,20 +243,17 @@ def multicore_ljf(listOfJobs, listOfCores):
                    pass #this processor finished execution
                else:
                    print("Processor:",i,"is executing its last",currBurst*-1,"bursts of operation")
-               cyclesDone += 1#This is very wrong
-                 '''
-                 TO DO: Simulate how bursts get done so that the cyclesDone is accurate. 
-                 While loop it till a core is empty while adding 1 to cycles done each time at least one of the cores has a process 
-                 '''    
-            
-                   
-                   
-    apt = execTime/len(listOfJobs)
+                   listOfBursts.append(currBurst*-1)               
+            listOfBursts.sort()
+            cyclesDone += listOfBursts[0] #adding the work of a last cpu to finish to our cycles count    
+
+    execTime = execTime*-1
+    apt = (execTime/len(listOfJobs))
     statIncrease = (cyclesDone - execTime)/execTime
     statIncrease = statIncrease * 100
     
     print("\nCycles of CPU operations done:",cyclesDone)
-    print("During this time, this many instructions were completed:",execTime*-1)
+    print("During this time, this many instructions were completed:",execTime)
     print("Average process time:",apt," cpu cycles")
     print("thanks to parallelism of this machine with",noCores,"cores")
     print("we increased proficiency of this system by:",statIncrease.__abs__())
@@ -400,6 +383,13 @@ def LJF(jobs,jobSize):
     print("\n Average Turnaround Time:", ATAT, "ms \n")
     return 
     
+def generateRandomJobs(noJobs):
+    jobs = list()
+    for i in range(1, noJobs+1):
+        jobs.append(process(i,random.randint(1,25)))
+        
+    return jobs
+
 def main_test():
     #read file maybe
     Jobs = ["Job1","Job2","Job3","Job4","Job5"]
@@ -436,13 +426,23 @@ def main():
     core1 = cpu(1)
     core2 = cpu(2)
     
-    cpuList = [core1, core2]    
+    cpuList = [core1] #[core1, core2]    
     
+    print("\nMulticore FCFS\n*******************************")
+    multicore_fcfs(procList, cpuList)
     print("\nMulticore LJF\n*******************************")
     multicore_ljf(procList, cpuList)
     print("\nMulticore SJF\n*******************************")
     multicore_sjf(procList, cpuList)
 
     
+def realmain():
+    procList = []
+    procList = generateRandomJobs(1)
+    
+    print(procList)
+    
+    for i in range(len(procList)):
+        print(procList[i])
 
-main()
+realmain()
