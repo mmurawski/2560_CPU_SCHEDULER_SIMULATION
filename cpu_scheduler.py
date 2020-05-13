@@ -1,7 +1,7 @@
 """
 Basic parallel CPU scheduler simulator 
 
-four algorithms will be simulated
+Four algorithms will be simulated
 First Come First Serve
     It will begin completing a job and won't stop until its finished even if new jobs were posted in the queue
 
@@ -11,7 +11,7 @@ Shortest Job First
 Longest Job first
     Longest Jobs in the queue will be completed first
 
-Round Robin
+Round Robin (only single core)
     A process will be switched for another one in the queue after being worked on a specific number of bursts
     
 This program will simulate those algorithms scheduling for parallel systems (ie. with multiple cores or processors)
@@ -405,6 +405,20 @@ def decoupleJobs(jobs):
         
     return
 
+def openFile():
+    try:
+        name = input("Please enter the file name: ")
+        file1 = open(name, 'r')
+    except FileNotFoundError:
+        print("File not found")
+        return 0
+    else:
+        file1.close
+        return file1
+    
+    
+
+    
 def main_test():
     #read file maybe
     Jobs = ["Job1","Job2","Job3","Job4","Job5"]
