@@ -174,11 +174,12 @@ def multicore_sjf(listOfJobs): #works single core
                     proc = procqueue.get() #get a new process from a queue
                     if proc:
                         print("Process with id:",proc.getid(),"and cpu time requirement of",proc.getBurst()," has started execution on core",i)
+                        listOfCores[i].setEndTime(proc.getBurst()-1)
                     else:
                         print("Core ",i," is idle")
                         pass
                     
-                    listOfCores[i].setEndTime(proc.getBurst()-1)
+                    
                 #^assigns a process to a currently empty core
             else:
                 listOfCores[i].setEndTime(currBurst - 1) #continue
@@ -235,11 +236,12 @@ def multicore_ljf(listOfJobs): #works single core
                     proc = procqueue.get() #get a new process from a queue
                     if proc:
                         print("Process with id:",proc.getid(),"and cpu time requirement of",proc.getBurst()*-1," has started execution on core",i)
+                        listOfCores[i].setEndTime(proc.getBurst()-1)
                     else:
                         print("Core ",i," is idle")
                         pass
                     
-                    listOfCores[i].setEndTime(proc.getBurst()+1)
+                    #listOfCores[i].setEndTime(proc.getBurst()+1)
                 #^assigns a process to a currently empty core
             else:
                 listOfCores[i].setEndTime(currBurst +1) #continue
