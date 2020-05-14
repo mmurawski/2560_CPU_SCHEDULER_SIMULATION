@@ -424,7 +424,7 @@ def openFile():
         file1.close
         return file1
     
-def readFileIntoProcesse(file1):
+def readFileIntoTasks(file1):
     procList = []
     
     if file1 != 0:
@@ -441,7 +441,14 @@ def readFileIntoProcesse(file1):
                 print("Something went wrong")
                 
     return procList    
-    
+ 
+def introMsg():
+    print("Welcome to CPU scheduling simulator of single and multi core architectures. ",
+              "-"*15,"To start, choose if you want to test the algorithms against a list of tasks "
+              ,"from a file or tasks that are randomly generated. This program comes with three ",
+              "example test files: test1.txt, test2.txt, test3.txt. \n Readme includes details on how to ",
+              "create your own testing text files for this simulation.")    
+
 def main():
     #loop unless x is pressed
     #do you want to read from a file or generate jobs?
@@ -451,26 +458,34 @@ def main():
     #multicore asks for range of cpus check if its more than 2 but less than 64
     
     exitSymbol = False
+    introMsg()
     
-    while exitSymbol:
-        print("Welcome to CPU scheduling simulator of single and multi core architectures. ",
-              "-"*15,"To start, choose if you want to test the algorithms against a list of tasks "
-              ,"from a file or tasks that are randomly generated. This program comes with three ",
-              "example test files: test1.txt, test2.txt, test3.txt. \n Readme includes details on how to ",
-              "create your own testing text files for this simulation.")
-        
+    while not exitSymbol:
+               
         print("Enter your selection: ")
             
-        choice = input("1. Tasks from a file\n2. Randomly generated tasks\n3.Quit the program")
+        choice = input("1. Tasks from a file\n2. Randomly generated tasks\n3. Display intro message again\n4. Quit the program\n")
         if choice == '1':
-            
-        
-    
+            file = openFile()
+            procList = readFileIntoTasks(file)
+        elif choice == '2':
+            noJobs = input("Enter number of tasks you want to test: ")
+            try:
+                noJobs = int(noJobs)
+                generateRandomJobs(noJobs)
+            except TypeError:
+                print("Number has to be typed")
+        elif choice == '3':
+           introMsg() 
+        elif choice == '4':
+            print("Goodbye")
+            exitSymbol = True;
+
     return
     
 def test4():
     procList = []
-    procList = readFileIntoProcesse(openFile())
+    procList = readFileIntoTasks(openFile())
     printJobs(procList)
     
     jobs = []
@@ -558,7 +573,10 @@ def test1():
     print("\nMulticore SJF\n*******************************")
     multicore_sjf(procList, cpuList)
 
-
+'''
 test4()
 test1()
 test1()
+'''
+
+main()
