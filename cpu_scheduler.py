@@ -386,7 +386,7 @@ def decoupleJobs(jobs): #this method exists to bridge how Matt and Dante approac
     jobsize = []
     
     for i in range(len(jobs)):
-        print(jobs[i].getid()," and their requirement:",jobs[i].getBurst())
+        #print(jobs[i].getid()," and their requirement:",jobs[i].getBurst())
         jobid.append(jobs[i].getid())
         jobsize.append(jobs[i].getBurst())
 
@@ -442,14 +442,7 @@ def repeatedTestMsg():
     print("You can repeat the test on the same tasks but with different simulation settings:")
     print("Press m to display the test menus again: ")
 
-def main():
-    #loop unless x is pressed
-    #do you want to read from a file or generate jobs?
-    #if read a file, loop until it does not fail (or x is pressed)
-    #single core or multiple core?
-    #single core uses dante code and perform decouple before it starts
-    #multicore asks for range of cpus check if its more than 2 but less than 64
-    
+def main():    
     exitSymbol = False
     introMsg()
     
