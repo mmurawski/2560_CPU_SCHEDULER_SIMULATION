@@ -1,7 +1,7 @@
 """
 Basic parallel CPU scheduler simulator 
 
-Four algorithms will be simulated
+Three algorithms will be simulated
 First Come First Serve
     It will begin completing a job and won't stop until its finished even if new jobs were posted in the queue
 
@@ -11,9 +11,6 @@ Shortest Job First
 Longest Job first
     Longest Jobs in the queue will be completed first
 
-Round Robin (only single core)
-    A process will be switched for another one in the queue after being worked on a specific number of bursts
-    
 This program will simulate those algorithms scheduling for parallel systems (ie. with multiple cores or processors)
 
 """
@@ -69,7 +66,11 @@ class process:
         string1 = "Process: "+str(self.id)+" with burst requirements:"+str(self.burst)
         return string1
         
-def FCFS(jobs, jobSize):
+def FCFS(procList):
+    jobs = []
+    jobSize = []
+    jobs, jobSize = decoupleJobs(procList)
+    
     totalJobLength = 0 # initialized totaljoblength as zero
     ATAT = 0
     TimeSum = 0
@@ -90,7 +91,10 @@ def FCFS(jobs, jobSize):
     return
 
 
-def multicore_fcfs(listOfJobs, listOfCores): #works single core
+def multicore_fcfs(listOfJobs): #works single core
+    noCpu = input("Input how many cpu cores there are:")
+    listOfCores = prepareCores(noCpu)
+        
     noCores = len(listOfCores) #number of cores
     execTime = 0 #used to calculate average execution time
     cyclesDone = 0; #multicore processors do their own bursts in parallel. This counter counts how many simultaneous bursts were completed
@@ -148,7 +152,10 @@ def multicore_fcfs(listOfJobs, listOfCores): #works single core
 
     return
     
-def multicore_sjf(listOfJobs, listOfCores):
+def multicore_sjf(listOfJobs): #works single core
+    noCpu = input("Input how many cpu cores there are:")
+    listOfCores = prepareCores(noCpu)
+
     noCores = len(listOfCores) #number of cores 
     execTime = 0 #used to calculate average execution time
     cyclesDone = 0; #multicore processors do their own bursts in parallel. This counter counts how many simultaneous bursts were completed 
@@ -204,7 +211,10 @@ def multicore_sjf(listOfJobs, listOfCores):
     
     return
 
-def multicore_ljf(listOfJobs, listOfCores):
+def multicore_ljf(listOfJobs): #works single core
+    noCpu = input("Input how many cpu cores there are:")
+    listOfCores = prepareCores(noCpu)
+        
     noCores = len(listOfCores) #number of cores
     execTime = 0 #used to calculate average execution time
     cyclesDone = 0; #multicore processors do their own bursts in parallel. This counter counts how many simultaneous bursts were completed    
@@ -266,50 +276,13 @@ def multicore_ljf(listOfJobs, listOfCores):
         currBurst = listOfCores[i].setEndTime(0) #reset the processor
     
     return
+   
 
-def RoundRobin(jobs,jobSize,Slice):
-    FinalJob = []
-    tempEndTime = []
-    finalJobTime = []
-    totalJobLength = 0
-    newSize = 0
+def SJF(procList):
+    jobs = []
+    jobSize = []
+    jobs, jobSize = decoupleJobs(procList)
     
-    while len(jobSize) > 0:
-        for i in range(len(jobSize)-1):  
-            print("i==",i)
-            if jobSize[i] <= Slice:
-                print("deleting")
-                newSize = newSize + jobSize[i]
-                tempEndTime.insert(len(tempEndTime),newSize)
-                finalJobTime.insert(len(finalJobTime),newSize)
-                FinalJob.insert(len(FinalJob),jobs[i])
-                del jobSize[i]# Since the job is completed, we can erase the current job length from circulation.
-                del jobs[i] # The corresponding job name is also erased from circulation.
-                totalJobLength = totalJobLength + newSize
-                print("newsize",newSize)
-                print("totaljoblen",totalJobLength)
-                
-                i = i - 1
-                print("i",i)
-                print("======")
-            else:
-                newSize = newSize + Slice
-                jobSize[i] = jobSize[i] - Slice
-                tempEndTime.insert(len(tempEndTime),newSize)
-                print(newSize)
-                print(jobSize[i])
-                print("----")
-    
-    print("| \n Job Name \t | \t Job Endtime \n")
-    print("------------------------------------")
-    for j in range(len(FinalJob)):
-        print(FinalJob[i],"\t | \t", finalJobTime[i], "ms \n")
-    print("\n Average Turnaround Time: ",(totalJobLength/len(FinalJob)),"ms \n")
-    
-    return
-    
-
-def SJF(jobs,jobSize):
     FinalJob = []
     finalJobTime = []
     totalJobLength = 0
@@ -345,7 +318,11 @@ def SJF(jobs,jobSize):
     print("\n Average Turnaround Time:", ATAT, "ms \n")
     return
  
-def LJF(jobs,jobSize):
+def LJF(procList):
+    jobs = []
+    jobSize = []
+    jobs, jobSize = decoupleJobs(procList)
+    
     FinalJob = []
     finalJobTime = []
     totalJobLength = 0
@@ -400,7 +377,8 @@ def printJobs(jobs):
     for i in range(len(jobs)):
         print(jobs[i])
 
-def decoupleJobs(jobs):
+def decoupleJobs(jobs): #this method exists to bridge how Matt and Dante approach enumarating lists
+    #this method will convert Matt's way of making jobs to one that works with Dante's code
     jobid = []
     jobsize = []
     
@@ -442,7 +420,7 @@ def readFileIntoTasks(file1):
  
 def introMsg():
     print("Welcome to CPU scheduling simulator of single and multi core architectures. \n",
-              "-"*15,"\nTo start, choose if you want to test the algorithms against a list of tasks "
+              "-"*15,"\nTo start, choose if you want to test the algorithms against a list of tasks or "
               ,"from a file or tasks that are randomly generated. This program comes with three ",
               "example test files: test1.txt, test2.txt, test3.txt. \nReadme includes details on how to ",
               "create your own testing text files for this simulation.")    
@@ -452,67 +430,14 @@ def testTypeMsg():
     print("1. Single-Core First Come, First Serve")
     print("2. Single-Core Shortest Job First")
     print("3. Single-Core Longest Job First")
-    print("4. Single-Core Round Robin")
-    print("5. Multi-Core First Come, First Serve")
-    print("6. Mutli-Core Shortest Job First")
-    print("7. Multi-Core Longest Job First")
+    print("4. Multi-Core First Come, First Serve")
+    print("5. Mutli-Core Shortest Job First")
+    print("6. Multi-Core Longest Job First")
+    print('x. Go back and generate or read other jobs')
 
-
-    
-
-def testTypeSelection(procList):
-    choice = input("What is your test selection:" )
-    if choice == '1':
-        jobs = []
-        jobSize = []
-        jobs, jobSize = decoupleJobs(procList)
-        print("---------------------------")
-        print("First come, First Served")
-        FCFS(jobs, jobSize)
-    elif choice == '2':
-        jobs = []
-        jobSize = []
-        jobs, jobSize = decoupleJobs(procList)
-        print("------------------------------")
-        print("Shortest Job First ")
-        SJF(jobs, jobSize)
-    elif choice == '3':
-        jobs = []
-        jobSize = []
-        jobs, jobSize = decoupleJobs(procList)
-        print("------------------------------")
-        print("Longest Job First ")
-        LJF(jobs, jobSize)
-    elif choice == '4':
-        jobs = []
-        jobSize = []
-        jobs, jobSize = decoupleJobs(procList)
-        print("---------------------------")
-        print("Round Robin with time slice 2")
-        RoundRobin(jobs, jobSize,2)
-        ''' MAYBE LET USER CHOOSE A TIME SLICE??
-        '''
-    elif choice == '5':
-        noCpu = input("Input how many cpu cores there are:")
-        cpuList = prepareCores(noCpu)
-        print("---------------------------")
-        print("Multi-Core FCFS")
-        multicore_fcfs(procList, cpuList)
-    elif choice == '6':
-        noCpu = input("Input how many cpu cores there are:")
-        cpuList = prepareCores(noCpu)
-        print("---------------------------")
-        print("Multi-Core SJF")
-        multicore_sjf(procList, cpuList)
-    elif choice == '7':
-        noCpu = input("Input how many cpu cores there are:")
-        cpuList = prepareCores(noCpu)
-        print("---------------------------")
-        print("Multi-Core LJF")
-        multicore_ljf(procList, cpuList)
-        
-        
-
+def repeatedTestMsg():
+    print("You can repeat the test on the same tasks but with different simulation settings:")
+    print("Press m to display the test menus again: ")
 
 def main():
     #loop unless x is pressed
@@ -529,13 +454,10 @@ def main():
                
         print("Enter your selection: ")
             
-        choice = input("1. Tasks from a file\n2. Randomly generated tasks\n3. Display intro message again\n4. Quit the program\n")
+        choice = input("1. Tasks from a file\n2. Randomly generated tasks\nx. Quit the program\n")
         if choice == '1':
             file = openFile()
             procList = readFileIntoTasks(file)
-            
-            testTypeMsg()
-            testTypeSelection(procList)
             
         elif choice == '2':
             noJobs = input("Enter number of tasks you want to test: ")
@@ -544,17 +466,47 @@ def main():
                 procList = generateRandomJobs(noJobs)
             except TypeError:
                 print("Number has to be typed")
-            else:
-                testTypeMsg()
-                testTypeSelection(procList)
-                
-        elif choice == '3':
-           introMsg() 
-        elif choice == '4':
+        elif choice == 'x':
             print("Goodbye")
             exitSymbol = True;
+            break
         else:
             print("Wrong choice, try again.")
+        
+        
+        
+        while choice != 'x':
+            testTypeMsg()
+            choice = input("What is your test selection:" )
+            if choice == '1':
+                print("---------------------------")
+                print("First come, First Served")
+                FCFS(procList)
+            elif choice == '2':
+                print("------------------------------")
+                print("Shortest Job First ")
+                SJF(procList)
+            elif choice == '3':
+                print("------------------------------")
+                print("Longest Job First ")
+                LJF(procList)
+            elif choice == '4':  
+                print("---------------------------")
+                print("Multi-Core FCFS")
+                multicore_fcfs(procList)
+            elif choice == '5':
+                print("---------------------------")
+                print("Multi-Core SJF")
+                multicore_sjf(procList)
+            elif choice == '6':
+                print("---------------------------")
+                print("Multi-Core LJF")
+                multicore_ljf(procList)
+            elif choice == 'x':
+                break
+            elif choice == 'm':
+                testTypeMsg()
+        
             
 
     return
