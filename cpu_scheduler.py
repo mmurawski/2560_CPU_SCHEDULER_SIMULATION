@@ -69,8 +69,6 @@ class process:
         string1 = "Process: "+str(self.id)+" with burst requirements:"+str(self.burst)
         return string1
         
-#edit so it takes the list of processes objects
-#edit so that it takes an information about current amount of cores
 def FCFS(jobs, jobSize):
     totalJobLength = 0 # initialized totaljoblength as zero
     ATAT = 0
@@ -443,11 +441,78 @@ def readFileIntoTasks(file1):
     return procList    
  
 def introMsg():
-    print("Welcome to CPU scheduling simulator of single and multi core architectures. ",
-              "-"*15,"To start, choose if you want to test the algorithms against a list of tasks "
+    print("Welcome to CPU scheduling simulator of single and multi core architectures. \n",
+              "-"*15,"\nTo start, choose if you want to test the algorithms against a list of tasks "
               ,"from a file or tasks that are randomly generated. This program comes with three ",
-              "example test files: test1.txt, test2.txt, test3.txt. \n Readme includes details on how to ",
+              "example test files: test1.txt, test2.txt, test3.txt. \nReadme includes details on how to ",
               "create your own testing text files for this simulation.")    
+
+def testTypeMsg():
+    print("What type of test to you want perform?")
+    print("1. Single-Core First Come, First Serve")
+    print("2. Single-Core Shortest Job First")
+    print("3. Single-Core Longest Job First")
+    print("4. Single-Core Round Robin")
+    print("5. Multi-Core First Come, First Serve")
+    print("6. Mutli-Core Shortest Job First")
+    print("7. Multi-Core Longest Job First")
+
+
+    
+
+def testTypeSelection(procList):
+    choice = input("What is your test selection:" )
+    if choice == '1':
+        jobs = []
+        jobSize = []
+        jobs, jobSize = decoupleJobs(procList)
+        print("---------------------------")
+        print("First come, First Served")
+        FCFS(jobs, jobSize)
+    elif choice == '2':
+        jobs = []
+        jobSize = []
+        jobs, jobSize = decoupleJobs(procList)
+        print("------------------------------")
+        print("Shortest Job First ")
+        SJF(jobs, jobSize)
+    elif choice == '3':
+        jobs = []
+        jobSize = []
+        jobs, jobSize = decoupleJobs(procList)
+        print("------------------------------")
+        print("Longest Job First ")
+        LJF(jobs, jobSize)
+    elif choice == '4':
+        jobs = []
+        jobSize = []
+        jobs, jobSize = decoupleJobs(procList)
+        print("---------------------------")
+        print("Round Robin with time slice 2")
+        RoundRobin(jobs, jobSize,2)
+        ''' MAYBE LET USER CHOOSE A TIME SLICE??
+        '''
+    elif choice == '5':
+        noCpu = input("Input how many cpu cores there are:")
+        cpuList = prepareCores(noCpu)
+        print("---------------------------")
+        print("Multi-Core FCFS")
+        multicore_fcfs(procList, cpuList)
+    elif choice == '6':
+        noCpu = input("Input how many cpu cores there are:")
+        cpuList = prepareCores(noCpu)
+        print("---------------------------")
+        print("Multi-Core SJF")
+        multicore_sjf(procList, cpuList)
+    elif choice == '7':
+        noCpu = input("Input how many cpu cores there are:")
+        cpuList = prepareCores(noCpu)
+        print("---------------------------")
+        print("Multi-Core LJF")
+        multicore_ljf(procList, cpuList)
+        
+        
+
 
 def main():
     #loop unless x is pressed
@@ -468,115 +533,31 @@ def main():
         if choice == '1':
             file = openFile()
             procList = readFileIntoTasks(file)
+            
+            testTypeMsg()
+            testTypeSelection(procList)
+            
         elif choice == '2':
             noJobs = input("Enter number of tasks you want to test: ")
             try:
                 noJobs = int(noJobs)
-                generateRandomJobs(noJobs)
+                procList = generateRandomJobs(noJobs)
             except TypeError:
                 print("Number has to be typed")
+            else:
+                testTypeMsg()
+                testTypeSelection(procList)
+                
         elif choice == '3':
            introMsg() 
         elif choice == '4':
             print("Goodbye")
             exitSymbol = True;
+        else:
+            print("Wrong choice, try again.")
+            
 
     return
-    
-def test4():
-    procList = []
-    procList = readFileIntoTasks(openFile())
-    printJobs(procList)
-    
-    jobs = []
-    jobSize = []
-    
-    jobs, jobSize = decoupleJobs(procList)
-    print(jobs)
-    print(jobSize)
-    
-    print("---------------------------")
-    print("First come, First Served")
-    FCFS(jobs, jobSize)
-    
-    print("---------------------------")
-    #RoundRobin(Jobs, jobSize,2)
-    print("Round Robin with time slice 2")
-    
-    print("------------------------------")
-    print("Shortest Job First ")
-    SJF(jobs, jobSize)
-    
-    print("------------------------------")
-    print("Longest Job First ")
-    LJF(jobs, jobSize)
-    
-def test3():
-    #read file maybe
-    Jobs = ["Job1","Job2","Job3","Job4","Job5"]
-    jobSize = [9,14,8,43,31]
-    print("---------------------------")
-    print("First come, First Served")
-    FCFS(Jobs, jobSize)
-    
-    print("---------------------------")
-    #RoundRobin(Jobs, jobSize,2)
-    print("Round Robin with time slice 2")
-    
-    print("------------------------------")
-    print("Shortest Job First ")
-    SJF(Jobs, jobSize)
-    
-    print("------------------------------")
-    print("Longest Job First ")
-    LJF(Jobs, jobSize)
-    
-    return
 
-def test2():
-    
-    p1 = process(1,5)
-    p2 = process(2,10)
-    p3 = process(3,7)
-    p4 = process(4,3)
-    p5 = process(5,4)
-    p6 = process(6,3)
-    p7 = process(7,5)
-    procList = [p1,p2,p3,p4,p5,p6,p7]
-    
-    core1 = cpu(1)
-    core2 = cpu(2)
-    
-    cpuList = [core1, core2]    
-    
-    print("\nMulticore FCFS\n*******************************")
-    multicore_fcfs(procList, cpuList)
-    print("\nMulticore LJF\n*******************************")
-    multicore_ljf(procList, cpuList)
-    print("\nMulticore SJF\n*******************************")
-    multicore_sjf(procList, cpuList)
-
-    
-def test1():
-    procList = []
-    
-    procList = readFileIntoProcesse(openFile())
-    printJobs(procList)
-    
-    noCpu = input("how many cpus: ")
-    cpuList = prepareCores(noCpu)
-    
-    print("\nMulticore FCFS\n*******************************")
-    multicore_fcfs(procList, cpuList)
-    print("\nMulticore LJF\n*******************************")
-    multicore_ljf(procList, cpuList)
-    print("\nMulticore SJF\n*******************************")
-    multicore_sjf(procList, cpuList)
-
-'''
-test4()
-test1()
-test1()
-'''
 
 main()
