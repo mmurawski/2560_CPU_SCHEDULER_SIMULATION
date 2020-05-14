@@ -407,10 +407,10 @@ def decoupleJobs(jobs):
     jobsize = []
     
     for i in range(len(jobs)):
-        #print(jobs[i].getid()," and their requirement:",jobs[i].getBurst())
-        jobid[i] = jobs[i].getid()
-        jobsize[i] = jobs[i].getBurst()
-        
+        print(jobs[i].getid()," and their requirement:",jobs[i].getBurst())
+        jobid.append(jobs[i].getid())
+        jobsize.append(jobs[i].getBurst())
+
     return jobid, jobsize
 
 def openFile():
@@ -442,8 +442,37 @@ def readFileIntoProcesse(file1):
                 
     return procList    
     
+
     
-def main_test():
+def test4():
+    procList = []
+    procList = readFileIntoProcesse(openFile())
+    printJobs(procList)
+    
+    jobs = []
+    jobSize = []
+    
+    jobs, jobSize = decoupleJobs(procList)
+    print(jobs)
+    print(jobSize)
+    
+    print("---------------------------")
+    print("First come, First Served")
+    FCFS(jobs, jobSize)
+    
+    print("---------------------------")
+    #RoundRobin(Jobs, jobSize,2)
+    print("Round Robin with time slice 2")
+    
+    print("------------------------------")
+    print("Shortest Job First ")
+    SJF(jobs, jobSize)
+    
+    print("------------------------------")
+    print("Longest Job First ")
+    LJF(jobs, jobSize)
+    
+def test3():
     #read file maybe
     Jobs = ["Job1","Job2","Job3","Job4","Job5"]
     jobSize = [9,14,8,43,31]
@@ -465,7 +494,7 @@ def main_test():
     
     return
 
-def main():
+def test2():
     
     p1 = process(1,5)
     p2 = process(2,10)
@@ -489,7 +518,7 @@ def main():
     multicore_sjf(procList, cpuList)
 
     
-def realmain():
+def test1():
     procList = []
     
     procList = readFileIntoProcesse(openFile())
@@ -505,4 +534,5 @@ def realmain():
     print("\nMulticore SJF\n*******************************")
     multicore_sjf(procList, cpuList)
 
-main()
+
+test4()
