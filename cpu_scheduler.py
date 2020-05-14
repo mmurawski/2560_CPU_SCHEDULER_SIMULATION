@@ -450,7 +450,21 @@ def main():
     #single core uses dante code and perform decouple before it starts
     #multicore asks for range of cpus check if its more than 2 but less than 64
     
+    exitSymbol = False
     
+    while exitSymbol:
+        print("Welcome to CPU scheduling simulator of single and multi core architectures. ",
+              "-"*15,"To start, choose if you want to test the algorithms against a list of tasks "
+              ,"from a file or tasks that are randomly generated. This program comes with three ",
+              "example test files: test1.txt, test2.txt, test3.txt. \n Readme includes details on how to ",
+              "create your own testing text files for this simulation.")
+        
+        print("Enter your selection: ")
+            
+        choice = input("1. Tasks from a file\n2. Randomly generated tasks\n3.Quit the program")
+        if choice == '1':
+            
+        
     
     return
     
