@@ -279,8 +279,11 @@ def multicore_ljf(listOfJobs): #works single core
                    print("Processor:",i,"is executing its last",currBurst*-1,"bursts of operation")
                    listOfBursts.append(currBurst*-1)               
             listOfBursts.sort()
-            cyclesDone += listOfBursts[-1] #adding the work of a last cpu to finish to our cycles count    
-
+            if len(listOfBursts) > 0:
+                cyclesDone += listOfBursts[-1] #adding the work of a last cpu to finish to our cycles count    
+            else:
+                pass
+            
     execTime = execTime*-1
     apt = (execTime/len(listOfJobs))
     statIncrease = (cyclesDone - execTime)/execTime
