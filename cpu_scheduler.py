@@ -171,14 +171,24 @@ def multicore_sjf(listOfJobs): #works single core
             currBurst = listOfCores[i].getEndTime()
             #print("Processor ",i," is executing ",currBurst) #if it sais '...executing 0' it means its currently free
             if currBurst == 0: #if the process finished execution
-                    proc = procqueue.get() #get a new process from a queue
+                try:
+                    proc = procqueue.get(False, None) #get a new process from a queue
+                    print("Process with id:",proc.getid(),"and cpu time requirement of",proc.getBurst()," has started execution on processor",i)
+                except:
+                    print("Core ",i," is idle")
+                    pass
+                else:
+                    listOfCores[i].setEndTime(proc.getBurst()-1)    
+                
+                '''
+                    proc = procqueue.get(False, None) #get a new process from a queue
                     if proc:
                         print("Process with id:",proc.getid(),"and cpu time requirement of",proc.getBurst()," has started execution on core",i)
                         listOfCores[i].setEndTime(proc.getBurst()-1)
                     else:
                         print("Core ",i," is idle")
                         pass
-                    
+                ''' 
                     
                 #^assigns a process to a currently empty core
             else:
@@ -233,14 +243,25 @@ def multicore_ljf(listOfJobs): #works single core
         for i in range(noCores):
             currBurst = listOfCores[i].getEndTime()
             if currBurst == 0: #if the process finished execution
-                    proc = procqueue.get() #get a new process from a queue
-                    if proc:
-                        print("Process with id:",proc.getid(),"and cpu time requirement of",proc.getBurst()*-1," has started execution on core",i)
-                        listOfCores[i].setEndTime(proc.getBurst()-1)
-                    else:
-                        print("Core ",i," is idle")
-                        pass
-                    
+                try:
+                    proc = procqueue.get(False, None) #get a new process from a queue
+                    print("Process with id:",proc.getid(),"and cpu time requirement of",proc.getBurst()*-1," has started execution on processor",i)
+                except:
+                    print("Core ",i," is idle")
+                    pass
+                else:
+                    listOfCores[i].setEndTime(proc.getBurst()+1)      
+                
+                
+                '''
+                proc = procqueue.get() #get a new process from a queue
+                if proc:
+                    print("Process with id:",proc.getid(),"and cpu time requirement of",proc.getBurst()*-1," has started execution on core",i)
+                    listOfCores[i].setEndTime(proc.getBurst()-1)
+                else:
+                    print("Core ",i," is idle")
+                    pass
+                '''
                     #listOfCores[i].setEndTime(proc.getBurst()+1)
                 #^assigns a process to a currently empty core
             else:
