@@ -93,9 +93,12 @@ def FCFS(procList):
 
 def multicore_fcfs(listOfJobs): #works single core
     noCpu = input("Input how many cpu cores there are:")
-    if noCpu.isalnum:
+    try:
+        noCpu = int(noCpu)
+    except ValueError:
         print("not a number. assuming 2 cores:")
         noCpu = '2'
+
     listOfCores = prepareCores(noCpu)
         
     noCores = len(listOfCores) #number of cores
@@ -158,9 +161,12 @@ def multicore_fcfs(listOfJobs): #works single core
     
 def multicore_sjf(listOfJobs): #works single core
     noCpu = input("Input how many cpu cores there are:")
-    if noCpu.isalnum:
+    try:
+        noCpu = int(noCpu)
+    except ValueError:
         print("not a number. assuming 2 cores:")
         noCpu = '2'
+
     listOfCores = prepareCores(noCpu)
 
     noCores = len(listOfCores) #number of cores 
@@ -232,9 +238,12 @@ def multicore_sjf(listOfJobs): #works single core
 
 def multicore_ljf(listOfJobs): #works single core
     noCpu = input("Input how many cpu cores there are:")
-    if noCpu.isalnum:
+    try:
+        noCpu = int(noCpu)
+    except ValueError:
         print("not a number. assuming 2 cores:")
         noCpu = '2'
+
     listOfCores = prepareCores(noCpu)
         
     noCores = len(listOfCores) #number of cores
