@@ -496,38 +496,38 @@ def main():
             print("Wrong choice, try again.")
         
         
-        
-        while choice != 'x':
-            testTypeMsg()
-            choice = input("What is your test selection:" )
-            if choice == '1':
-                print("---------------------------")
-                print("First come, First Served")
-                FCFS(procList)
-            elif choice == '2':
-                print("------------------------------")
-                print("Shortest Job First ")
-                SJF(procList)
-            elif choice == '3':
-                print("------------------------------")
-                print("Longest Job First ")
-                LJF(procList)
-            elif choice == '4':  
-                print("---------------------------")
-                print("Multi-Core FCFS")
-                multicore_fcfs(procList)
-            elif choice == '5':
-                print("---------------------------")
-                print("Multi-Core SJF")
-                multicore_sjf(procList)
-            elif choice == '6':
-                print("---------------------------")
-                print("Multi-Core LJF")
-                multicore_ljf(procList)
-            elif choice == 'x':
-                break
-            elif choice == 'm':
+        if procList:
+            while choice != 'x':
                 testTypeMsg()
+                choice = input("What is your test selection:" )
+                if choice == '1':
+                    print("---------------------------")
+                    print("First come, First Served")
+                    FCFS(procList)
+                elif choice == '2':
+                    print("------------------------------")
+                    print("Shortest Job First ")
+                    SJF(procList)
+                elif choice == '3':
+                    print("------------------------------")
+                    print("Longest Job First ")
+                    LJF(procList)
+                elif choice == '4':  
+                    print("---------------------------")
+                    print("Multi-Core FCFS")
+                    multicore_fcfs(procList)
+                elif choice == '5':
+                    print("---------------------------")
+                    print("Multi-Core SJF")
+                    multicore_sjf(procList)
+                elif choice == '6':
+                    print("---------------------------")
+                    print("Multi-Core LJF")
+                    multicore_ljf(procList)
+                elif choice == 'x':
+                    break
+                elif choice == 'm':
+                    testTypeMsg()
         
             
 
