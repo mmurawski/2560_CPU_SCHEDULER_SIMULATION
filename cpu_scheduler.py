@@ -442,7 +442,15 @@ def readFileIntoProcesse(file1):
                 
     return procList    
     
-def main:
+def main():
+    #loop unless x is pressed
+    #do you want to read from a file or generate jobs?
+    #if read a file, loop until it does not fail (or x is pressed)
+    #single core or multiple core?
+    #single core uses dante code and perform decouple before it starts
+    #multicore asks for range of cpus check if its more than 2 but less than 64
+    
+    
     
     return
     
