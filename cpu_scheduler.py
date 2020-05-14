@@ -113,7 +113,8 @@ def multicore_fcfs(listOfJobs): #works single core
                     proc = procqueue.pop(0) #get a new process from a queue
                     print("Process with id:",proc.getid(),"and cpu time requirement of",proc.getBurst()," has started execution on processor",i)
                 except:
-                    print("No more processes in the queue.")
+                    print("Core ",i," is idle")
+                    
                     pass
                 else:
                     listOfCores[i].setEndTime(proc.getBurst()-1)
@@ -174,7 +175,8 @@ def multicore_sjf(listOfJobs): #works single core
                     if proc:
                         print("Process with id:",proc.getid(),"and cpu time requirement of",proc.getBurst()," has started execution on core",i)
                     else:
-                        print("No more processes in the queue.")
+                        print("Core ",i," is idle")
+                        pass
                     
                     listOfCores[i].setEndTime(proc.getBurst()-1)
                 #^assigns a process to a currently empty core
@@ -190,7 +192,7 @@ def multicore_sjf(listOfJobs): #works single core
                    pass #this processor finished execution
                else:
                    print("Processor:",i,"is executing its last",currBurst,"bursts of operation")
-                   listOfBursts.append(currBurst)
+                   listOfBursts.append(currBurst)    
                    
             listOfBursts.sort()
             cyclesDone += listOfBursts[-1] #adding the work of a last cpu to finish to our cycles count 
@@ -234,7 +236,8 @@ def multicore_ljf(listOfJobs): #works single core
                     if proc:
                         print("Process with id:",proc.getid(),"and cpu time requirement of",proc.getBurst()*-1," has started execution on core",i)
                     else:
-                        print("No more processes in the queue.")
+                        print("Core ",i," is idle")
+                        pass
                     
                     listOfCores[i].setEndTime(proc.getBurst()+1)
                 #^assigns a process to a currently empty core
