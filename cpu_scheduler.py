@@ -442,7 +442,9 @@ def readFileIntoProcesse(file1):
                 
     return procList    
     
-
+def main:
+    
+    return
     
 def test4():
     procList = []
@@ -524,7 +526,7 @@ def test1():
     procList = readFileIntoProcesse(openFile())
     printJobs(procList)
     
-    noCpu = input("how many cpus")
+    noCpu = input("how many cpus: ")
     cpuList = prepareCores(noCpu)
     
     print("\nMulticore FCFS\n*******************************")
@@ -536,3 +538,5 @@ def test1():
 
 
 test4()
+test1()
+test1()
